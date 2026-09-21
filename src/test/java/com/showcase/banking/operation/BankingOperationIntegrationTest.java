@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
+import com.showcase.banking.auth.domain.AppUser;
+import com.showcase.banking.auth.infrastructure.persistence.JdbcAppUserRepository;
+import com.showcase.banking.shared.UuidV7;
 
 import com.showcase.banking.TestcontainersConfiguration;
 import com.showcase.banking.account.application.CreateAccount;
@@ -48,9 +51,12 @@ class BankingOperationIntegrationTest {
     @Autowired
     private JdbcBankingTransactionRepository transactionRepository;
 
+    @Autowired
+    private JdbcAppUserRepository userRepository;
+
     @Test
     void processesDepositPublishedToKafka() {
-        Account account = createAccount.execute(UUID.randomUUID());
+        Account account = createAccount.execute(createUser());
 
         BankingRequestResponse response = requestBankingOperation.execute(account.getId(), BankingOperationType.DEPOSIT,
                 new BigDecimal("125.50"));
@@ -63,7 +69,7 @@ class BankingOperationIntegrationTest {
 
     @Test
     void rejectsWithdrawalWithInsufficientBalance() {
-        Account account = createAccount.execute(UUID.randomUUID());
+        Account account = createAccount.execute(createUser());
 
         BankingRequestResponse response = requestBankingOperation.execute(account.getId(), BankingOperationType.WITHDRAWAL,
                 BigDecimal.ONE);
@@ -77,7 +83,7 @@ class BankingOperationIntegrationTest {
 
     @Test
     void doesNotApplyTheSameEventTwice() {
-        Account account = createAccount.execute(UUID.randomUUID());
+        Account account = createAccount.execute(createUser());
         BankingRequest request = requestRepository.save(BankingRequest.pending(account.getId(), BankingOperationType.DEPOSIT,
                 new BigDecimal("50.00")));
         BankingOperationEvent event = BankingOperationEvent.from(request);
@@ -104,5 +110,9 @@ class BankingOperationIntegrationTest {
             }
         }
         return fail("Banking request %s was not finalized within 15 seconds".formatted(requestId));
+    }
+
+    private UUID createUser() {
+        return userRepository.save(AppUser.create("test-" + UuidV7.next() + "@example.com", "not-a-real-password-hash")).getId();
     }
 }

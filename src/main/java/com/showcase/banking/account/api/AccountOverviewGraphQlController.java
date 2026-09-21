@@ -9,6 +9,7 @@ import com.showcase.banking.account.application.GetAccount;
 import com.showcase.banking.account.domain.Account;
 import com.showcase.banking.operation.domain.BankingRequest;
 import com.showcase.banking.operation.domain.BankingTransaction;
+import com.showcase.banking.security.AccountAccess;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -24,14 +25,18 @@ import org.springframework.stereotype.Controller;
 public class AccountOverviewGraphQlController {
 
     private final GetAccountOverview getAccountOverview;
+    private final AccountAccess accountAccess;
 
-    public AccountOverviewGraphQlController(GetAccountOverview getAccountOverview) {
+    public AccountOverviewGraphQlController(GetAccountOverview getAccountOverview, AccountAccess accountAccess) {
         this.getAccountOverview = getAccountOverview;
+        this.accountAccess = accountAccess;
     }
 
     @QueryMapping
     public AccountOverviewView accountOverview(@Argument String accountId) {
-        GetAccountOverview.AccountOverview overview = getAccountOverview.execute(parseAccountId(accountId));
+        UUID parsedAccountId = parseAccountId(accountId);
+        accountAccess.ownedAccount(parsedAccountId);
+        GetAccountOverview.AccountOverview overview = getAccountOverview.execute(parsedAccountId);
         return AccountOverviewView.from(overview);
     }
 
@@ -69,9 +74,9 @@ public class AccountOverviewGraphQlController {
         }
     }
 
-    public record AccountView(UUID id, UUID holderId, String status, String balance) {
+    public record AccountView(UUID id, String status, String balance) {
         static AccountView from(Account account) {
-            return new AccountView(account.getId(), account.getHolderId(), account.getStatus().name(),
+            return new AccountView(account.getId(), account.getStatus().name(),
                     account.getBalance().toPlainString());
         }
     }

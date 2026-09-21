@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.showcase.banking.shared.UuidV7;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -56,7 +57,7 @@ public class BankingRequest {
     }
 
     public static BankingRequest pending(UUID accountId, BankingOperationType operationType, BigDecimal amount) {
-        return new BankingRequest(UUID.randomUUID(), accountId, operationType, amount,
+        return new BankingRequest(UuidV7.next(), accountId, operationType, amount,
                 BankingRequestStatus.PENDING, Instant.now(), null, null, null);
     }
 

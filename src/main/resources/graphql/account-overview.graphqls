@@ -11,7 +11,6 @@ type AccountOverview {
 
 type Account {
   id: ID!
-  holderId: ID!
   status: String!
   """Decimal represented as a string to prevent floating-point precision loss."""
   balance: String!

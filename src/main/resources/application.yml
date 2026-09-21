@@ -1,0 +1,31 @@
+app:
+  name: banking
+  security:
+    # Defina APP_JWT_SECRET fora do código em ambientes compartilhados ou produção.
+    jwt-secret: ${APP_JWT_SECRET:change-this-demo-secret-before-production-please}
+    jwt-expiration-seconds: 3600
+  kafka:
+    operations-topic: banking.operations
+    operations-topic-partitions: 3
+    operations-topic-replicas: 1
+    consumer-group-id: banking-operation-processor
+  openapi:
+    title: Banking Demo API
+    version: v1
+    description: API stateless. Cadastre-se ou faça login e informe o accessToken no botão Authorize.
+
+spring:
+  application:
+    name: ${app.name}
+  graphql:
+    graphiql:
+      enabled: true
+  kafka:
+    consumer:
+      group-id: ${app.kafka.consumer-group-id}
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.showcase.banking.operation.infrastructure.messaging
+        spring.json.value.default.type: com.showcase.banking.operation.infrastructure.messaging.BankingOperationEvent
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

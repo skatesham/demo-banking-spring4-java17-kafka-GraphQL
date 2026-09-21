@@ -31,7 +31,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     healthcheck:
-      test: ['CMD-SHELL', '/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list']
+      # kafka-native no longer ships kafka-topics.sh; probe the broker listener directly.
+      test: ['CMD-SHELL', 'nc -z localhost 9092']
       interval: 10s
       timeout: 10s
       retries: 12

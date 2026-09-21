@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.showcase.banking.shared.UuidV7;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -19,8 +20,8 @@ public class Account {
     @Id
     private final UUID id;
 
-    @Column("holder_id")
-    private final UUID holderId;
+    @Column("user_id")
+    private final UUID userId;
 
     private AccountStatus status;
     private BigDecimal balance;
@@ -31,22 +32,22 @@ public class Account {
     @Version
     private Long version;
 
-    public Account(UUID id, UUID holderId, AccountStatus status, BigDecimal balance, Instant createdAt) {
-        this(id, holderId, status, balance, createdAt, null);
+    public Account(UUID id, UUID userId, AccountStatus status, BigDecimal balance, Instant createdAt) {
+        this(id, userId, status, balance, createdAt, null);
     }
 
     @PersistenceCreator
-    public Account(UUID id, UUID holderId, AccountStatus status, BigDecimal balance, Instant createdAt, Long version) {
+    public Account(UUID id, UUID userId, AccountStatus status, BigDecimal balance, Instant createdAt, Long version) {
         this.id = Objects.requireNonNull(id, "id must not be null");
-        this.holderId = Objects.requireNonNull(holderId, "holderId must not be null");
+        this.userId = Objects.requireNonNull(userId, "userId must not be null");
         this.status = Objects.requireNonNull(status, "status must not be null");
         this.balance = requireNonNegative(balance);
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
         this.version = version;
     }
 
-    public static Account create(UUID holderId) {
-        return new Account(UUID.randomUUID(), holderId, AccountStatus.ACTIVE, BigDecimal.ZERO, Instant.now());
+    public static Account create(UUID userId) {
+        return new Account(UuidV7.next(), userId, AccountStatus.ACTIVE, BigDecimal.ZERO, Instant.now());
     }
 
     public void credit(BigDecimal amount) {

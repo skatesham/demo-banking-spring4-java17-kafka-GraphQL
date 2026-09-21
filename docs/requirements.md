@@ -6,11 +6,14 @@ Disponibilizar um demo de banco com contas, autenticação e movimentações de 
 
 ## Escopo funcional
 
-### Conta
+### Usuário e conta
 
-- Criar uma conta para um cliente autenticado.
+- Cadastrar usuário com e-mail único e senha protegida por hash BCrypt.
+- Fazer login stateless: a resposta devolve JWT Bearer e o `accountId` do usuário, quando existir.
+- Criar uma conta para o cliente autenticado somente quando ele ainda não possuir uma.
 - Consultar os dados da própria conta, incluindo saldo disponível.
-- Cada conta possui ao menos: identificador, titular, status, saldo e data de criação.
+- Cada usuário possui no máximo uma conta; a restrição é garantida por `UNIQUE (account.user_id)`.
+- IDs criados pela aplicação usam UUIDv7.
 
 ### Autenticação e autorização
 
@@ -44,7 +47,9 @@ O processamento deve ser idempotente: uma nova entrega de um evento já concluí
 
 | Método | Rota | Finalidade |
 | --- | --- | --- |
-| `POST` | `/accounts` | Cria uma conta. |
+| `POST` | `/auth/register` | Cria usuário e devolve JWT, sem criar conta automaticamente. |
+| `POST` | `/auth/login` | Autentica e devolve JWT, `accountId` e `canCreateAccount`. |
+| `POST` | `/accounts` | Cria a única conta do usuário no token; não recebe holderId. |
 | `GET` | `/accounts/{accountId}` | Consulta a conta e seu saldo. |
 | `POST` | `/accounts/{accountId}/deposits` | Solicita um depósito. |
 | `POST` | `/accounts/{accountId}/withdrawals` | Solicita um saque. |
@@ -56,7 +61,7 @@ Para depósito e saque, a resposta inicial deve ser `202 Accepted`, com `request
 
 - PostgreSQL como banco relacional.
 - Flyway para criar e versionar o schema.
-- Entidades mínimas: `account`, `banking_request` e `transaction`.
+- Entidades mínimas: `app_user`, `account`, `banking_request` e `transaction`.
 - Saldo e criação de movimentação devem ser persistidos na mesma transação do consumidor.
 
 ## Mensageria

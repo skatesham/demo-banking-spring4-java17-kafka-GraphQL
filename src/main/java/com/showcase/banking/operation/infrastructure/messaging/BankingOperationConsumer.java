@@ -17,7 +17,7 @@ public class BankingOperationConsumer {
         this.processBankingOperation = processBankingOperation;
     }
 
-    @KafkaListener(topics = BankingOperationPublisher.TOPIC)
+    @KafkaListener(topics = "#{@appProperties.kafka.operationsTopic}")
     public void consume(BankingOperationEvent event) {
         log.info("Banking operation event received: requestId={}, accountId={}, type={}",
                 event.requestId(), event.accountId(), event.operationType());

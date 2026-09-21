@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import com.showcase.banking.shared.UuidV7;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class BankingRequestTest {
 
     @Test
     void completesOnlyOnce() {
-        BankingRequest request = BankingRequest.pending(UUID.randomUUID(), BankingOperationType.DEPOSIT,
+        BankingRequest request = BankingRequest.pending(UuidV7.next(), BankingOperationType.DEPOSIT,
                 new BigDecimal("25.00"));
 
         request.complete();
@@ -24,7 +24,7 @@ class BankingRequestTest {
 
     @Test
     void recordsReasonWhenRejected() {
-        BankingRequest request = BankingRequest.pending(UUID.randomUUID(), BankingOperationType.WITHDRAWAL,
+        BankingRequest request = BankingRequest.pending(UuidV7.next(), BankingOperationType.WITHDRAWAL,
                 new BigDecimal("25.00"));
 
         request.reject("Insufficient balance");

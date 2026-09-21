@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import com.showcase.banking.shared.UuidV7;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ class AccountTest {
 
     @Test
     void creditsAndDebitsAnActiveAccount() {
-        Account account = Account.create(UUID.randomUUID());
+        Account account = Account.create(UuidV7.next());
 
         account.credit(new BigDecimal("100.00"));
         account.debit(new BigDecimal("35.50"));
@@ -23,7 +23,7 @@ class AccountTest {
 
     @Test
     void rejectsWithdrawalWhenBalanceIsInsufficient() {
-        Account account = Account.create(UUID.randomUUID());
+        Account account = Account.create(UuidV7.next());
         account.credit(new BigDecimal("10.00"));
 
         assertThatThrownBy(() -> account.debit(new BigDecimal("10.01")))
@@ -33,7 +33,7 @@ class AccountTest {
 
     @Test
     void rejectsWithdrawalFromInactiveAccount() {
-        Account account = Account.create(UUID.randomUUID());
+        Account account = Account.create(UuidV7.next());
         account.deactivate();
 
         assertThatThrownBy(() -> account.debit(BigDecimal.ONE))
@@ -42,7 +42,7 @@ class AccountTest {
 
     @Test
     void rejectsNonPositiveAmounts() {
-        Account account = Account.create(UUID.randomUUID());
+        Account account = Account.create(UuidV7.next());
 
         assertThatIllegalArgumentException().isThrownBy(() -> account.credit(BigDecimal.ZERO));
         assertThatIllegalArgumentException().isThrownBy(() -> account.debit(new BigDecimal("-1")));

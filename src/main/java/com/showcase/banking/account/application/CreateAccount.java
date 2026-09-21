@@ -19,9 +19,16 @@ public class CreateAccount {
         this.accountRepository = accountRepository;
     }
 
-    public Account execute(UUID holderId) {
-        Account account = accountRepository.save(Account.create(holderId));
-        log.info("Account created: accountId={}, holderId={}", account.getId(), account.getHolderId());
+    public Account execute(UUID userId) {
+        if (accountRepository.findByUserId(userId).isPresent()) {
+            throw new AccountAlreadyExistsException();
+        }
+        Account account = accountRepository.save(Account.create(userId));
+        log.info("Account created: accountId={}, userId={}", account.getId(), account.getUserId());
         return account;
+    }
+
+    public static class AccountAlreadyExistsException extends RuntimeException {
+        public AccountAlreadyExistsException() { super("A user can only own one account"); }
     }
 }

@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.showcase.banking.shared.UuidV7;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -55,7 +56,7 @@ public class BankingTransaction {
     }
 
     public static BankingTransaction from(BankingRequest request, BigDecimal balanceAfter) {
-        return new BankingTransaction(UUID.randomUUID(), request.getId(), request.getAccountId(),
+        return new BankingTransaction(UuidV7.next(), request.getId(), request.getAccountId(),
                 request.getOperationType(), request.getAmount(), balanceAfter, Instant.now(), null);
     }
 

@@ -36,7 +36,7 @@ public class RequestBankingOperation {
         BankingRequest request = requestRepository.save(BankingRequest.pending(accountId, operationType, amount));
         log.info("Banking operation requested: requestId={}, accountId={}, type={}, amount={}",
                 request.getId(), accountId, operationType, amount);
-        publisher.publish(account.getHolderId().toString(), BankingOperationEvent.from(request));
+        publisher.publish(account.getId().toString(), BankingOperationEvent.from(request));
         return BankingRequestResponse.from(request);
     }
 }
