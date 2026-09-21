@@ -94,7 +94,7 @@ Com a aplicação em execução, a especificação OpenAPI e a interface interat
 Acessar [http://localhost:8080](http://localhost:8080) redireciona para o Swagger UI.
 
 | Método | Rota | Protegida | Resposta | Finalidade |
-| --- | --- | --- | --- |
+|:---|:---|:---|:---|:---|
 | `POST` | `/auth/register` | Não | `201 Created` | Cria um usuário e devolve JWT; não cria conta automaticamente. |
 | `POST` | `/auth/login` | Não | `200 OK` | Aceita e-mail e senha; devolve JWT, `accountId` (ou `null`) e `canCreateAccount`. |
 | `POST` | `/accounts` | Sim | `201 Created` | Cria a única conta do usuário autenticado. Corpo vazio. |
