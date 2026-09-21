@@ -1,5 +1,13 @@
 # Banking Demo
 
+<p align="center">
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&amp;weight=700&amp;size=28&amp;pause=1000&amp;color=37D7A5&amp;center=true&amp;vCenter=true&amp;width=900&amp;height=100&amp;lines=Banking+Demo;Spring+Security+%7C+Kafka+%7C+GraphQL;API+banc%C3%A1ria+orientada+a+eventos" alt="Banking Demo: Spring Security, Kafka, GraphQL e API bancária orientada a eventos" />
+  </a>
+</p>
+
+![Fluxo assíncrono: Spring Boot API, Kafka e PostgreSQL](assets/processing-flow.svg)
+
 Demo bancário em Java 17 e Spring Boot com autenticação JWT stateless, uma conta por usuário e processamento assíncrono de depósitos e saques via Kafka.
 
 ## O que este demo mostra
