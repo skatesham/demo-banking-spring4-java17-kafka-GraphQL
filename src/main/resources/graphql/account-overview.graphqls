@@ -1,0 +1,37 @@
+type Query {
+  """A dashboard query that avoids multiple REST round trips for a client UI."""
+  accountOverview(accountId: ID!): AccountOverview!
+}
+
+type AccountOverview {
+  account: Account!
+  recentTransactions: [BankingTransaction!]!
+  recentRequests: [BankingRequest!]!
+}
+
+type Account {
+  id: ID!
+  holderId: ID!
+  status: String!
+  """Decimal represented as a string to prevent floating-point precision loss."""
+  balance: String!
+}
+
+type BankingTransaction {
+  id: ID!
+  requestId: ID!
+  operationType: String!
+  amount: String!
+  balanceAfter: String!
+  createdAt: String!
+}
+
+type BankingRequest {
+  id: ID!
+  operationType: String!
+  amount: String!
+  status: String!
+  createdAt: String!
+  processedAt: String
+  rejectionReason: String
+}

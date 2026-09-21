@@ -1,0 +1,2 @@
+ALTER TABLE banking_request ADD COLUMN version BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE banking_transaction ADD COLUMN version BIGINT NOT NULL DEFAULT 0;
